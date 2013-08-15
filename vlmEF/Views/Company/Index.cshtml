@@ -1,0 +1,57 @@
+﻿@model IEnumerable<vlmEF.Company>
+
+@{
+    ViewBag.Title = "Manage Companies";
+}
+
+<h2>Companies</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            CompanyName
+        </th>
+        <th>
+            CompanyAddress
+        </th>
+        <th>
+            CompanyCity
+        </th>
+        <th>
+            CompanyState
+        </th>
+        <th>
+            CompanyZip
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyCity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyState)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyZip)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CompanyId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CompanyId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CompanyId })
+        </td>
+    </tr>
+}
+
+</table>

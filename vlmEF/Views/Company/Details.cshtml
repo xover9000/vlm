@@ -1,0 +1,40 @@
+﻿@model vlmEF.Company
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Company</legend>
+
+    <div class="display-label">CompanyName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyName)
+    </div>
+
+    <div class="display-label">CompanyAddress</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyAddress)
+    </div>
+
+    <div class="display-label">CompanyCity</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyCity)
+    </div>
+
+    <div class="display-label">CompanyState</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyState)
+    </div>
+
+    <div class="display-label">CompanyZip</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyZip)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.CompanyId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
