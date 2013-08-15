@@ -51,7 +51,7 @@
           <Property Name="LastLogin" Type="datetime" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="EmailAddress" Type="nvarchar" MaxLength="50" />
-          <Property Name="PhoneNumber" Type="nchar" MaxLength="12" />
+          <Property Name="PhoneNumber" Type="nchar" MaxLength="10" />
         </EntityType>
         <Association Name="FK_Users_Companies">
           <End Role="Companies" Type="CustomMembershipWithRolesModel.Store.Companies" Multiplicity="1" />
