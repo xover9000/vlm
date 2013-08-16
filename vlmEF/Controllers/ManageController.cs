@@ -54,7 +54,7 @@ namespace vlmEF.Controllers
                     _usersContext.Companies.ToList().Select(
                         x => new SelectListItem() { Selected = false, Text = x.CompanyName, Value = x.CompanyId.ToString(CultureInfo.InvariantCulture) });
 
-                var usersCompany = companies.First(x => x.Value == roleIdAsString);
+                var usersCompany = companies.First(x => x.Value == companyIdAsString);
                 usersCompany.Selected = true;
 
                 // set a dynamic property for the view (viewbag) with the roles to make them accessible in the view

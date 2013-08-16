@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Web.Mvc;
 using System.Web.Security;
 using vlmEF.Services;
+using System.Linq;
 
 namespace vlmEF.Models
 {
@@ -64,5 +65,8 @@ namespace vlmEF.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public int CompanyId { get; set; }
+
     }
 }

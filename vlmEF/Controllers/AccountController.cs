@@ -8,6 +8,7 @@ using vlmEF.Interfaces;
 using vlmEF.Models;
 using vlmEF.Services;
 using System.Linq;
+using System.Collections;
 
 namespace vlmEF.Controllers
 {
@@ -71,6 +72,11 @@ namespace vlmEF.Controllers
 
         public ActionResult Register()
         {
+            var context = new UsersContext();
+            var companies =
+                            context.Companies.ToList().Select(
+                                x => new SelectListItem() { Selected = false, Text = x.CompanyName, Value = x.CompanyId.ToString(CultureInfo.InvariantCulture) });
+            ViewBag.CompanyOptions = companies;
             return View();
         }
 
@@ -84,6 +90,14 @@ namespace vlmEF.Controllers
             {
                 // Attempt to register the user
                 var createStatus = MembershipService.CreateUser(model.UserName, model.Password, model.Email);
+                using (var context = new UsersContext())
+                {
+                    var user = context.Users.Single(u => u.UserName == model.UserName);
+                    var companyId = model.CompanyId;
+                    
+                    user.CompanyId = companyId;
+                    context.SaveChanges();
+                }
 
                 if (createStatus == MembershipCreateStatus.Success)
                 {

@@ -53,6 +53,14 @@
                 @Html.ValidationMessageFor(m => m.ConfirmPassword)
             </div>
 
+            <div class="editor-label">
+                @Html.LabelFor(model => model.CompanyId, "Company")
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(x => x.CompanyId, (IEnumerable<SelectListItem>)ViewBag.CompanyOptions)
+            </div>
+
+
             <p>
                 <input type="submit" value="Register" />
             </p>
