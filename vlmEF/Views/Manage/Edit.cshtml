@@ -18,7 +18,7 @@
         @Html.HiddenFor(model => model.UserId)
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.UserName)
+            @Html.LabelFor(model => model.UserName, "User Name")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.UserName)
@@ -26,7 +26,7 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.EmailAddress)
+            @Html.LabelFor(model => model.EmailAddress, "Email Address")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.EmailAddress)
@@ -34,13 +34,14 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.PhoneNumber)
+            @Html.LabelFor(model => model.PhoneNumber, "Phone Number")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.PhoneNumber)
             @Html.ValidationMessageFor(model => model.PhoneNumber)
         </div>
-        
+        @if (User.IsInRole("SuperAdmin"))
+        {
         <div class="editor-label">
             @Html.LabelFor(model => model.Role)
         </div>
@@ -54,6 +55,7 @@
         <div class="editor-field">
             @Html.DropDownListFor(x => x.CompanyId, (IEnumerable<SelectListItem>)ViewBag.CompanyOptions)
         </div>
+        }
         <p>
             <input type="submit" value="Save" />
         </p>

@@ -7,7 +7,7 @@ using System.Data;
 
 namespace vlmEF.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]  // Roles = "Role1, Role2, ..."  Putting the auth here protects all actions in the controller
+    [Authorize(Roles = "SuperAdmin, Admin")]  // Roles = "Role1, Role2, ..."  Putting the auth here protects all actions in the controller
     public class CompanyController : Controller
     {
         private readonly UsersContext _usersContext;
@@ -20,7 +20,13 @@ namespace vlmEF.Controllers
 
         public ActionResult Index()
         {
-            return View(_usersContext.Companies.Where(u => u.CompanyId > 1).ToList());
+            var companies = _usersContext.Companies.ToList();
+            if (User.IsInRole("SuperAdmin"))
+            {
+                return View(companies);
+            }
+            var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+            return RedirectToAction("Details", new { id = signedInUser.CompanyId });
         }
 
         //public JsonResult UpdateRole(int userId, short roleId)
@@ -35,7 +41,11 @@ namespace vlmEF.Controllers
             var company = _usersContext.Companies.FirstOrDefault(x => x.CompanyId == id);
             if (company != null)
             {
-
+                var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+                if (!User.IsInRole("SuperAdmin") && signedInUser.CompanyId != id)
+                {
+                    return RedirectToAction("NotAllowed", "Error");
+                }
                 string roleIdAsString = company.CompanyId.ToString(CultureInfo.InvariantCulture);
                 // Get a list of roles, but as SelectListItems (selected, text, value)
                 var roles =
@@ -57,6 +67,11 @@ namespace vlmEF.Controllers
         public ActionResult Edit(Company company) //int userId, string userName, string password, string phoneNumber, string userEmailAddress
         {
             var existingCompany = _usersContext.Companies.First(x => x.CompanyId == company.CompanyId);
+            var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+            if (!User.IsInRole("SuperAdmin") && signedInUser.CompanyId != existingCompany.CompanyId)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             existingCompany.CompanyName = company.CompanyName;
             existingCompany.CompanyAddress = company.CompanyAddress;
             existingCompany.CompanyCity = company.CompanyCity;
@@ -72,6 +87,11 @@ namespace vlmEF.Controllers
 
         public ActionResult Details(int id)
         {
+            var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+            if (!User.IsInRole("SuperAdmin") && signedInUser.CompanyId != id)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             var company = _usersContext.Companies.FirstOrDefault(x => x.CompanyId == id);
             if (company != null)
             {
@@ -82,6 +102,11 @@ namespace vlmEF.Controllers
 
         public ActionResult Delete(int id)
         {
+            var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+            if (!User.IsInRole("SuperAdmin") && signedInUser.CompanyId != id)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             var company = _usersContext.Companies.FirstOrDefault(x => x.CompanyId == id);
             if (company != null)
             {
@@ -94,6 +119,11 @@ namespace vlmEF.Controllers
         [ActionName("Delete")]
         public ActionResult Delete_Post(int id) //int userId, string userName, string password, string phoneNumber, string userEmailAddress
         {
+            var signedInUser = _usersContext.Users.First(x => x.UserName == User.Identity.Name);
+            if (!User.IsInRole("SuperAdmin") && signedInUser.CompanyId != id)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             var existingCompany = _usersContext.Companies.FirstOrDefault(x => x.CompanyId == id);
             _usersContext.DeleteObject(existingCompany);
             _usersContext.SaveChanges();
@@ -102,12 +132,20 @@ namespace vlmEF.Controllers
 
         public ActionResult Create()
         {
+            if (!User.IsInRole("SuperAdmin"))
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             return View(new Company());
         }
 
         [HttpPost]
         public ActionResult Create(Company company)
         {
+            if (!User.IsInRole("SuperAdmin"))
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             if (ModelState.IsValid)
             {
                 // Attempt to register the user

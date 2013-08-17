@@ -7,7 +7,7 @@ using System.Data;
 
 namespace vlmEF.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]  // Roles = "Role1, Role2, ..."  Putting the auth here protects all actions in the controller
+    [Authorize(Roles = "SuperAdmin,Admin")]  // Roles = "Role1, Role2, ..."  Putting the auth here protects all actions in the controller
     public class ManageController : Controller
     {
         private readonly UsersContext _usersContext;
@@ -20,7 +20,14 @@ namespace vlmEF.Controllers
         
         public ActionResult Index()
         {
-            return View(_usersContext.Users.Where(u => u.UserId > 1).ToList());
+            var users = _usersContext.Users.ToList();
+            if (!User.IsInRole("SuperAdmin"))
+            {
+                var signedInUser = _usersContext.Users.First(u => u.UserName == User.Identity.Name);
+                ViewBag.Company = signedInUser.Company.CompanyName;
+                users = users.Where(u => u.CompanyId == signedInUser.CompanyId).ToList();
+            }
+            return View(users);
         }
 
         //public JsonResult UpdateRole(int userId, short roleId)
@@ -32,10 +39,14 @@ namespace vlmEF.Controllers
         // Alex was here
         public ActionResult Edit(int id)
         {
+            var signedInUser = _usersContext.Users.First(u => u.UserName == User.Identity.Name);
             var user = _usersContext.Users.FirstOrDefault(x => x.UserId == id);
             if(user != null)
             {
-
+                if (!User.IsInRole("SuperAdmin") && user.CompanyId != signedInUser.CompanyId)
+                {
+                    return RedirectToAction("NotAllowed", "Error");
+                }
                 string roleIdAsString = user.RoleId.ToString(CultureInfo.InvariantCulture);
                 // Get a list of roles, but as SelectListItems (selected, text, value)
                 var roles =
@@ -68,12 +79,20 @@ namespace vlmEF.Controllers
         [HttpPost]
         public ActionResult Edit(User user) //int userId, string userName, string password, string phoneNumber, string userEmailAddress
         {
+            var signedInUser = _usersContext.Users.First(u => u.UserName == User.Identity.Name);
             var existingUser = _usersContext.Users.First(x => x.UserId == user.UserId);
+            if (!User.IsInRole("SuperAdmin") && existingUser.CompanyId != signedInUser.CompanyId)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             existingUser.UserName = user.UserName;
             existingUser.PhoneNumber = user.PhoneNumber;
             existingUser.EmailAddress = user.EmailAddress;
-            existingUser.RoleId = user.RoleId;
-            existingUser.CompanyId = user.CompanyId;
+            if (User.IsInRole("SuperAdmin"))
+            {
+                existingUser.RoleId = user.RoleId;
+                existingUser.CompanyId = user.CompanyId;
+            }
 
             // this is a 'trick' to set all the properties of an entity object at once. Add it, change it's state to modified
             //_usersContext.AddObject("Users", user);
@@ -94,7 +113,12 @@ namespace vlmEF.Controllers
 
         public ActionResult Delete(int id)
         {
+            var signedInUser = _usersContext.Users.First(u => u.UserName == User.Identity.Name);
             var user = _usersContext.Users.FirstOrDefault(x => x.UserId == id);
+            if (!User.IsInRole("SuperAdmin") && user.CompanyId != signedInUser.CompanyId)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             if (user != null)
             {
                 return View(user);
@@ -106,7 +130,12 @@ namespace vlmEF.Controllers
         [ActionName("Delete")]
         public ActionResult Delete_Post(int id) //int userId, string userName, string password, string phoneNumber, string userEmailAddress
         {
-            var existingUser = _usersContext.Users.FirstOrDefault(x => x.UserId == id);
+            var signedInUser = _usersContext.Users.First(u => u.UserName == User.Identity.Name);
+            var existingUser = _usersContext.Users.First(x => x.UserId == id);
+            if (!User.IsInRole("SuperAdmin") && existingUser.CompanyId != signedInUser.CompanyId)
+            {
+                return RedirectToAction("NotAllowed", "Error");
+            }
             _usersContext.DeleteObject(existingUser);
             _usersContext.SaveChanges();
             return RedirectToAction("Index");

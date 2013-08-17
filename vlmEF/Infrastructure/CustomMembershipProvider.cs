@@ -22,7 +22,18 @@ namespace vlmEF.Infrastructure
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            using (var context = new UsersContext())
+            {
+                var oldHash = GetMd5Hash(oldPassword);
+                var user = context.Users.SingleOrDefault(u => u.UserName == username && u.Password == oldHash);
+                if (user == null)
+                {
+                    return false;
+                }
+                user.Password = GetMd5Hash(newPassword);
+                context.SaveChanges();
+                return true;
+            }
         }
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)

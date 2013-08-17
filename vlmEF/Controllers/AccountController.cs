@@ -69,7 +69,7 @@ namespace vlmEF.Controllers
 
         //
         // GET: /Account/Register
-
+        [Authorize (Roles="SuperAdmin,Admin")]
         public ActionResult Register()
         {
             var context = new UsersContext();
@@ -92,6 +92,11 @@ namespace vlmEF.Controllers
                 var createStatus = MembershipService.CreateUser(model.UserName, model.Password, model.Email);
                 using (var context = new UsersContext())
                 {
+                    if (!User.IsInRole("SuperAdmin"))
+                    {
+                        var signedInUser = context.Users.First(x => x.UserName == User.Identity.Name);
+                        model.CompanyId = signedInUser.CompanyId;
+                    }
                     var user = context.Users.Single(u => u.UserName == model.UserName);
                     var companyId = model.CompanyId;
                     
@@ -101,7 +106,7 @@ namespace vlmEF.Controllers
 
                 if (createStatus == MembershipCreateStatus.Success)
                 {
-                    return RedirectToAction("LogOn", "Account");
+                    return RedirectToAction("Index", "Manage");
                 }
                 ModelState.AddModelError("", ErrorCodeToString(createStatus));
             }
@@ -140,7 +145,7 @@ namespace vlmEF.Controllers
                     MembershipUser currentUser = Membership.GetUser(User.Identity.Name, true /* userIsOnline */);
                     changePasswordSucceeded = currentUser.ChangePassword(model.OldPassword, model.NewPassword);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     changePasswordSucceeded = false;
                 }

@@ -6,6 +6,15 @@
 
 <h2>Users</h2>
 
+@if (User.IsInRole("SuperAdmin"))
+{
+<p>You can edit users in any company.</p>
+}
+else if (User.IsInRole("Admin"))
+{
+<p>You can edit users in your company, @ViewBag.Company.</p>
+}
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -15,13 +24,19 @@
             User Name
         </th>
         <th>
-            EmailAddress
+            Email Address
         </th>
         <th>
             Phone Number
         </th>
+        @if (User.IsInRole("SuperAdmin"))
+        {
         <th>
             Company
+        </th>
+        }
+        <th>
+            Role
         </th>
         <th></th>
     </tr>
@@ -37,8 +52,14 @@
         <td>
             @Html.DisplayFor(modelItem => item.PhoneNumber)
         </td>
+        @if (User.IsInRole("SuperAdmin"))
+        {
         <td>
             @Html.DisplayFor(modelItem => item.Company.CompanyName)
+        </td>
+        }
+        <td>
+            @Html.DisplayFor(modelItem => item.Role.RoleDescription)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |

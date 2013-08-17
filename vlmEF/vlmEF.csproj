@@ -77,6 +77,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CompaniesContext.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -194,6 +195,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Company\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Error\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Error\NotFound.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Error\NotAllowed.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

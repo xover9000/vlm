@@ -20,30 +20,15 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <!-- <li>@Html.ActionLink("About", "About", "Home")</li> -->
                     <li>@Html.ActionLink("Reports", "Reports", "Home")</li>
-                    <!-- @if (User.IsInRole("SuperAdmin"))
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
                     {
-                        <li>@Html.ActionLink("Super Admin", "SuperAdmin", "Home")</li>
-                    } -->
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("Admin", "Admin", "Home")</li>
+                        <li>@Html.ActionLink(User.IsInRole("SuperAdmin") ? "Manage Companies" : "My Company", "Index","Company")</li>
                     }
-                    <!-- @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("Admin Or Super Admin", "AdminOrSuperAdmin", "Home")</li>
-                    } -->
-                    <!-- @if (User.IsInRole("Admin") || User.IsInRole("Author"))
-                    {
-                        <li>@Html.ActionLink("Admin Or Author", "AdminOrAuthor", "Home")</li>
-                    } -->
-                    @if (User.IsInRole("SuperAdmin"))
-                    {
-                        <li>@Html.ActionLink("Manage Companies", "Index","Company")</li>
-                    }
-                    @if (User.IsInRole("SuperAdmin"))
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Manage Users", "Index","Manage")</li>
                     }
+                    <li>@Html.ActionLink("My Account", "ChangePassword", "Account")</li>
 
                 </ul>
             </div>
