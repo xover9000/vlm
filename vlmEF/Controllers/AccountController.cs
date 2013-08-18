@@ -9,6 +9,7 @@ using vlmEF.Models;
 using vlmEF.Services;
 using System.Linq;
 using System.Collections;
+using System.Net;
 
 namespace vlmEF.Controllers
 {
@@ -28,6 +29,10 @@ namespace vlmEF.Controllers
 
         public ActionResult LogOn()
         {
+            if (User.Identity.IsAuthenticated) // they're logged in, so they were probably redirected because of a 401, so send to not allowed.
+            {
+                return RedirectToAction("NotAllowed", "Error", new { statusCode = HttpStatusCode.OK });
+            }
             return View();
         }
 
