@@ -106,6 +106,7 @@
     <Content Include="Content\footer-logo.png" />
     <Content Include="Content\loader-transparent.gif" />
     <Content Include="Content\logo.png" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.8.3-vsdoc.js" />
     <Content Include="Scripts\jquery-1.8.3.js" />
