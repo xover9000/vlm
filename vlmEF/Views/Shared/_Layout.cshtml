@@ -28,7 +28,10 @@
                     {
                         <li>@Html.ActionLink("Manage Users", "Index","Manage")</li>
                     }
-                    <li>@Html.ActionLink("My Account", "ChangePassword", "Account")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("My Account", "ChangePassword", "Account")</li>
+                    }
 
                 </ul>
             </div>
