@@ -68,5 +68,11 @@ namespace vlmEF.Models
 
         public int CompanyId { get; set; }
 
+        [Display(Name = "Subscription Start")]
+        public DateTime SubscriptionStart { get; set; }
+
+        [Display(Name = "Subscription End")]
+        public DateTime SubscriptionEnd { get; set; }
+
     }
 }

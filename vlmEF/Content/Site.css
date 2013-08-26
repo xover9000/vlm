@@ -308,6 +308,7 @@ div#title {
 ----------------------------------------------------------*/
 .display-label, 
 .editor-label {
+    font-weight: bold;
     margin: 1em 0 0 0;
 }
 

@@ -9,10 +9,6 @@
           <EntitySet Name="Companies" EntityType="CustomMembershipWithRolesModel.Store.Companies" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Roles" EntityType="CustomMembershipWithRolesModel.Store.Roles" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Users" EntityType="CustomMembershipWithRolesModel.Store.Users" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_Users_Companies" Association="CustomMembershipWithRolesModel.Store.FK_Users_Companies">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Users" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Users_Roles" Association="CustomMembershipWithRolesModel.Store.FK_Users_Roles">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
@@ -42,7 +38,7 @@
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="CompanyId" Type="int" Nullable="false" />
+          <Property Name="CompanyId" Type="int" />
           <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="50" />
@@ -52,19 +48,10 @@
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="EmailAddress" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneNumber" Type="nchar" MaxLength="10" />
+          <Property Name="SubscriptionStart" Type="date" />
+          <Property Name="SubscriptionEnd" Type="date" />
+          <Property Name="Disabled" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Users_Companies">
-          <End Role="Companies" Type="CustomMembershipWithRolesModel.Store.Companies" Multiplicity="1" />
-          <End Role="Users" Type="CustomMembershipWithRolesModel.Store.Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="CompanyId" />
-            </Principal>
-            <Dependent Role="Users">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Users_Roles">
           <End Role="Roles" Type="CustomMembershipWithRolesModel.Store.Roles" Multiplicity="1" />
           <End Role="Users" Type="CustomMembershipWithRolesModel.Store.Users" Multiplicity="*" />
@@ -99,8 +86,8 @@
             <PropertyRef Name="RoleId" />
           </Key>
           <Property Type="Int16" Name="RoleId" Nullable="false" />
-          <Property Type="String" Name="RoleName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="RoleDescription" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="RoleName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="RoleDescription" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Users" Relationship="CustomMembershipWithRolesModel.FK_Users_Users1" FromRole="Role1" ToRole="User1" />
           </EntityType>
         <EntityType Name="User">
@@ -108,18 +95,21 @@
             <PropertyRef Name="UserId" />
           </Key>
           <Property Type="Int32" Name="UserId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="UserName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Password" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="PhoneNumber" MaxLength="12" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Password" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="PhoneNumber" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Type="Int16" Name="RoleId" Nullable="false" DefaultValue="2" />
           <NavigationProperty Name="Role" Relationship="CustomMembershipWithRolesModel.FK_Users_Users1" FromRole="User1" ToRole="Role1" />
-          <Property Type="Int32" Name="CompanyId" Nullable="false" DefaultValue="1" />
+          <Property Type="Int32" Name="CompanyId" DefaultValue="1" />
           <Property Type="String" Name="FirstName" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="LastLogin" />
+          <Property Type="DateTime" Name="LastLogin" Precision="3" />
           <Property Type="String" Name="CreatedBy" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="EmailAddress" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Company" Relationship="CustomMembershipWithRolesModel.FK_Users_Companies" FromRole="UserOld" ToRole="Company" />
+          <Property Type="DateTime" Name="SubscriptionStart" Precision="0" />
+          <Property Type="DateTime" Name="SubscriptionEnd" Precision="0" />
+          <Property Type="Boolean" Name="Disabled" Nullable="false" />
         </EntityType>
         <Association Name="FK_Users_Users1">
           <End Type="CustomMembershipWithRolesModel.Role" Role="Role1" Multiplicity="1" />
@@ -146,7 +136,7 @@
           <NavigationProperty Name="Users" Relationship="CustomMembershipWithRolesModel.FK_Users_Companies" FromRole="Company" ToRole="UserOld" />
         </EntityType>
         <Association Name="FK_Users_Companies">
-          <End Type="CustomMembershipWithRolesModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="CustomMembershipWithRolesModel.Company" Role="Company" Multiplicity="0..1" />
           <End Type="CustomMembershipWithRolesModel.User" Role="UserOld" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Company">
@@ -175,6 +165,9 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="CustomMembershipWithRolesModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Disabled" ColumnName="Disabled" />
+                <ScalarProperty Name="SubscriptionEnd" ColumnName="SubscriptionEnd" />
+                <ScalarProperty Name="SubscriptionStart" ColumnName="SubscriptionStart" />
                 <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
@@ -223,7 +216,7 @@
     <Diagrams>
       <Diagram Name="UserDataModel">
         <EntityTypeShape EntityType="CustomMembershipWithRolesModel.Role" Width="1.5" PointX="1.375" PointY="0.5" Height="1.7879850260416657" />
-        <EntityTypeShape EntityType="CustomMembershipWithRolesModel.User" Width="1.5" PointX="3.25" PointY="0.5" Height="3.5186979166666656" />
+        <EntityTypeShape EntityType="CustomMembershipWithRolesModel.User" Width="1.5" PointX="3.625" PointY="0.5" Height="3.5186979166666656" />
         <AssociationConnector Association="CustomMembershipWithRolesModel.FK_Users_Users1" >
           <ConnectorPoint PointX="2.875" PointY="1.3939925130208335" />
           <ConnectorPoint PointX="3.25" PointY="1.3939925130208335" />

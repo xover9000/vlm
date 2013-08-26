@@ -46,6 +46,16 @@ namespace vlmEF.Controllers
             {
                 if (MembershipService.ValidateUser(model.UserName, model.Password))
                 {
+                    using (var context = new UsersContext())
+                    {
+                        var user = context.Users.First(x => x.UserName == model.UserName);
+                        if (user.Disabled || 
+                            (user.SubscriptionStart.HasValue && DateTime.Today < user.SubscriptionStart.Value) || 
+                            (user.SubscriptionEnd.HasValue && DateTime.Today > user.SubscriptionEnd.Value))
+                        {
+                            return RedirectToAction("InvalidSubscription", "Error");
+                        }
+                    }
                     SetupFormsAuthTicket(model.UserName, model.RememberMe);
 
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
@@ -97,14 +107,20 @@ namespace vlmEF.Controllers
                 var createStatus = MembershipService.CreateUser(model.UserName, model.Password, model.Email);
                 using (var context = new UsersContext())
                 {
+                    var signedInUser = context.Users.First(x => x.UserName == User.Identity.Name);
+
                     if (!User.IsInRole("SuperAdmin"))
                     {
-                        var signedInUser = context.Users.First(x => x.UserName == User.Identity.Name);
-                        model.CompanyId = signedInUser.CompanyId;
+                        model.CompanyId = (int)signedInUser.CompanyId;
                     }
                     var user = context.Users.Single(u => u.UserName == model.UserName);
                     var companyId = model.CompanyId;
-                    
+
+                    user.CreatedBy = signedInUser.UserName;
+
+                    model.SubscriptionEnd = model.SubscriptionEnd < model.SubscriptionStart ? model.SubscriptionStart : model.SubscriptionEnd;
+                    user.SubscriptionStart = model.SubscriptionStart;
+                    user.SubscriptionEnd = model.SubscriptionEnd;
                     user.CompanyId = companyId;
                     context.SaveChanges();
                 }

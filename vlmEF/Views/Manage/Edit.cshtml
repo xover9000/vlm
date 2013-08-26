@@ -54,8 +54,26 @@
         </div>
         <div class="editor-field">
             @Html.DropDownListFor(x => x.CompanyId, (IEnumerable<SelectListItem>)ViewBag.CompanyOptions)
-        </div>
+        </div>        
         }
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubscriptionStart)
+        </div>
+        <div class="editor-field">
+            <input type="date" name="SubscriptionStart" value="@(Model.SubscriptionStart.HasValue ? Model.SubscriptionStart.Value.ToString("yyyy-MM-dd") : "")" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubscriptionEnd)
+        </div>
+        <div class="editor-field">
+            <input type="date" name="SubscriptionEnd" value="@(Model.SubscriptionEnd.HasValue ? Model.SubscriptionEnd.Value.ToString("yyyy-MM-dd") : "")" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Disabled)
+        </div>
+        <div class="editor-field">
+            @Html.CheckBoxFor(model => model.Disabled)
+        </div>
         <p>
             <input type="submit" value="Save" />
         </p>

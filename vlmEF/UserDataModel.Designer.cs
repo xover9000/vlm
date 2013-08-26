@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 #region EDM Relationship Metadata
 
 [assembly: EdmRelationshipAttribute("CustomMembershipWithRolesModel", "FK_Users_Users1", "Role1", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(vlmEF.Role), "User1", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(vlmEF.User), true)]
-[assembly: EdmRelationshipAttribute("CustomMembershipWithRolesModel", "FK_Users_Companies", "Company", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(vlmEF.Company), "UserOld", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(vlmEF.User), true)]
+[assembly: EdmRelationshipAttribute("CustomMembershipWithRolesModel", "FK_Users_Companies", "Company", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(vlmEF.Company), "UserOld", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(vlmEF.User), true)]
 
 #endregion
 
@@ -373,14 +373,10 @@ namespace vlmEF
         /// Create a new Role object.
         /// </summary>
         /// <param name="roleId">Initial value of the RoleId property.</param>
-        /// <param name="roleName">Initial value of the RoleName property.</param>
-        /// <param name="roleDescription">Initial value of the RoleDescription property.</param>
-        public static Role CreateRole(global::System.Int16 roleId, global::System.String roleName, global::System.String roleDescription)
+        public static Role CreateRole(global::System.Int16 roleId)
         {
             Role role = new Role();
             role.RoleId = roleId;
-            role.RoleName = roleName;
-            role.RoleDescription = roleDescription;
             return role;
         }
 
@@ -418,7 +414,7 @@ namespace vlmEF
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String RoleName
         {
@@ -430,7 +426,7 @@ namespace vlmEF
             {
                 OnRoleNameChanging(value);
                 ReportPropertyChanging("RoleName");
-                _RoleName = StructuralObject.SetValidValue(value, false);
+                _RoleName = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("RoleName");
                 OnRoleNameChanged();
             }
@@ -442,7 +438,7 @@ namespace vlmEF
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String RoleDescription
         {
@@ -454,7 +450,7 @@ namespace vlmEF
             {
                 OnRoleDescriptionChanging(value);
                 ReportPropertyChanging("RoleDescription");
-                _RoleDescription = StructuralObject.SetValidValue(value, false);
+                _RoleDescription = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("RoleDescription");
                 OnRoleDescriptionChanged();
             }
@@ -510,12 +506,14 @@ namespace vlmEF
         /// <param name="userId">Initial value of the UserId property.</param>
         /// <param name="userName">Initial value of the UserName property.</param>
         /// <param name="password">Initial value of the Password property.</param>
-        public static User CreateUser(global::System.Int32 userId, global::System.String userName, global::System.String password)
+        /// <param name="disabled">Initial value of the Disabled property.</param>
+        public static User CreateUser(global::System.Int32 userId, global::System.String userName, global::System.String password, global::System.Boolean disabled)
         {
             User user = new User();
             user.UserId = userId;
             user.UserName = userName;
             user.Password = password;
+            user.Disabled = disabled;
             return user;
         }
 
@@ -649,9 +647,9 @@ namespace vlmEF
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.Int32 CompanyId
+        public Nullable<global::System.Int32> CompanyId
         {
             get
             {
@@ -666,8 +664,8 @@ namespace vlmEF
                 OnCompanyIdChanged();
             }
         }
-        private global::System.Int32 _CompanyId = 1;
-        partial void OnCompanyIdChanging(global::System.Int32 value);
+        private Nullable<global::System.Int32> _CompanyId = 1;
+        partial void OnCompanyIdChanging(Nullable<global::System.Int32> value);
         partial void OnCompanyIdChanged();
     
         /// <summary>
@@ -789,6 +787,78 @@ namespace vlmEF
         private global::System.String _EmailAddress;
         partial void OnEmailAddressChanging(global::System.String value);
         partial void OnEmailAddressChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> SubscriptionStart
+        {
+            get
+            {
+                return _SubscriptionStart;
+            }
+            set
+            {
+                OnSubscriptionStartChanging(value);
+                ReportPropertyChanging("SubscriptionStart");
+                _SubscriptionStart = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("SubscriptionStart");
+                OnSubscriptionStartChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _SubscriptionStart;
+        partial void OnSubscriptionStartChanging(Nullable<global::System.DateTime> value);
+        partial void OnSubscriptionStartChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> SubscriptionEnd
+        {
+            get
+            {
+                return _SubscriptionEnd;
+            }
+            set
+            {
+                OnSubscriptionEndChanging(value);
+                ReportPropertyChanging("SubscriptionEnd");
+                _SubscriptionEnd = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("SubscriptionEnd");
+                OnSubscriptionEndChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _SubscriptionEnd;
+        partial void OnSubscriptionEndChanging(Nullable<global::System.DateTime> value);
+        partial void OnSubscriptionEndChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean Disabled
+        {
+            get
+            {
+                return _Disabled;
+            }
+            set
+            {
+                OnDisabledChanging(value);
+                ReportPropertyChanging("Disabled");
+                _Disabled = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Disabled");
+                OnDisabledChanged();
+            }
+        }
+        private global::System.Boolean _Disabled;
+        partial void OnDisabledChanging(global::System.Boolean value);
+        partial void OnDisabledChanged();
 
         #endregion
 

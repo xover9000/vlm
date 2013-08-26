@@ -55,5 +55,10 @@ namespace vlmEF.Controllers
 
             return View();
         }
+
+        public ActionResult InvalidSubscription()
+        {
+            return View();
+        }
     }
 }

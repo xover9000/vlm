@@ -59,7 +59,7 @@ namespace vlmEF.Controllers
                 // set a dynamic property for the view (viewbag) with the roles to make them accessible in the view
                 ViewBag.RoleOptions = roles;
 
-                string companyIdAsString = user.CompanyId.ToString(CultureInfo.InvariantCulture);
+                string companyIdAsString = ((int)user.CompanyId).ToString(CultureInfo.InvariantCulture);
                 // Get a list of roles, but as SelectListItems (selected, text, value)
                 var companies =
                     _usersContext.Companies.ToList().Select(
@@ -93,6 +93,10 @@ namespace vlmEF.Controllers
                 existingUser.RoleId = user.RoleId;
                 existingUser.CompanyId = user.CompanyId;
             }
+            user.SubscriptionEnd = user.SubscriptionEnd < user.SubscriptionStart ? user.SubscriptionStart : user.SubscriptionEnd;
+            existingUser.SubscriptionStart = user.SubscriptionStart;
+            existingUser.SubscriptionEnd = user.SubscriptionEnd;
+            existingUser.Disabled = user.Disabled;
 
             // this is a 'trick' to set all the properties of an entity object at once. Add it, change it's state to modified
             //_usersContext.AddObject("Users", user);

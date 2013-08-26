@@ -9,19 +9,39 @@
 <fieldset>
     <legend>User</legend>
 
-    <div class="display-label">UserName</div>
+    <div class="display-label">User Name</div>
     <div class="display-field">
         @Html.DisplayFor(model => model.UserName)
     </div>
 
-    <div class="display-label">EmailAddress</div>
+    <div class="display-label">Email Address</div>
     <div class="display-field">
         @Html.DisplayFor(model => model.EmailAddress)
     </div>
 
-    <div class="display-label">PhoneNumber</div>
+    <div class="display-label">Phone Number</div>
     <div class="display-field">
         @Html.DisplayFor(model => model.PhoneNumber)
+    </div>
+    <div class="display-label">Company</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Company.CompanyName)
+    </div>
+    <div class="display-label">Role</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Role.RoleDescription)
+    </div>
+    <div class="display-label">Subscription Start</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SubscriptionStart)
+    </div>
+    <div class="display-label">Subscription End</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SubscriptionEnd)
+    </div>
+    <div class="display-label">Status</div>
+    <div class="display-field">
+        @(Model.Disabled ? "Disabled" : "Enabled")
     </div>
 </fieldset>
 <p>

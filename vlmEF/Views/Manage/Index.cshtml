@@ -38,6 +38,15 @@ else if (User.IsInRole("Admin"))
         <th>
             Role
         </th>
+        <th>
+            Subscription Start
+        </th>
+        <th>
+            Subscription End
+        </th>
+        <th>
+            Status
+        </th>
         <th></th>
     </tr>
 
@@ -60,6 +69,15 @@ else if (User.IsInRole("Admin"))
         }
         <td>
             @Html.DisplayFor(modelItem => item.Role.RoleDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SubscriptionStart)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SubscriptionEnd)
+        </td>
+        <td>
+            @(item.Disabled ? "Disabled" : "Enabled")
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |
